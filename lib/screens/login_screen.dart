@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home_screen.dart';
-import 'dart:math';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -123,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           ),
         ],
       ),
-      child: Icon(Icons.account_circle, size: 80, color: const Color.fromARGB(255, 255, 255, 255)),
+      child: Icon(Icons.account_circle, size: 80, color: Colors.white),
     );
   }
 
@@ -133,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         Text(
           'Selamat Datang',
           style: TextStyle(
-            fontSize: 30,
+            fontSize: 32,
             fontWeight: FontWeight.bold,
             color: Colors.white,
             shadows: [
@@ -148,23 +147,23 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         SizedBox(height: 8),
         Text(
           'Masuk untuk melanjutkan',
-          style: TextStyle(fontSize: 16, color: Colors.white),
+          style: TextStyle(fontSize: 18, color: Colors.white70),
         ),
       ],
     );
   }
 
-  Widget _buildGlassCard () {
+  Widget _buildGlassCard() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: Container(
           padding: EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 53, 138, 199).withOpacity(0.2),
+            color: Colors.blue.withOpacity(0.3),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white),
+            border: Border.all(color: Colors.white.withOpacity(0.5)),
           ),
           child: Column(
             children: [
@@ -215,10 +214,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                   setState(() => _obscurePassword = !_obscurePassword);
                 },
               )
-              
             : null,
         filled: true,
-        fillColor: Colors.white.withOpacity(0.3),
+        fillColor: Colors.white.withOpacity(0.2),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -230,7 +228,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.2)),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
         ),
       ),
     );
@@ -243,16 +241,16 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       height: 50,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.blue.shade800, const Color.fromARGB(255, 6, 23, 38)],
+          colors: [Colors.blue.shade800, Colors.blue.shade600],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: _isLoading ? 0 : 10,
-            offset: Offset(0, 3),
+            color: Colors.black.withOpacity(0.25),
+            blurRadius: _isLoading ? 0 : 15,
+            offset: Offset(0, 6),
           ),
         ],
       ),
@@ -270,9 +268,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 child: Text(
                   'MASUK',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
+                    letterSpacing: 1.2,
                   ),
                 ),
               ),
@@ -297,8 +296,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     setState(() => _isLoading = true);
     await Future.delayed(Duration(seconds: 2));
 
-    if (_usernameController.text != 'admin' ||
-        _passwordController.text != 'password') {
+    if (_usernameController.text != 'admin' || _passwordController.text != 'password') {
       setState(() => _isLoading = false);
       _showError('Kredensial tidak valid');
       return;
@@ -311,9 +309,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => HomeScreen(),
+        pageBuilder: ( context, animation, secondaryAnimation) => HomeScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition (opacity: animation,
+          return FadeTransition(
+            opacity: animation,
             child: child,
           );
         },
@@ -350,54 +349,86 @@ class _CustomBackgroundPainter extends CustomPainter {
     final width = size.width;
     final paint = Paint();
 
-    // Membuat gradient linear
+    // Base gradient background - cooler blues with subtle purple accents
     final gradient = LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [
-        Colors.blue.shade100, // Warna awal yang lebih terang
-        Colors.blue.shade400,
-        Colors.blue.shade700,
-        Colors.blue.shade900, // Menambahkan warna biru tua
+        Color(0xFF004D7A),
+        Color(0xFF008793),
+        Color(0xFF00BF72),
+        Color(0xFFA8EB12),
       ],
-      stops: [0.0, 0.3, 0.6, 1.0], // Mengatur sebaran warna
+      stops: [0.0, 0.4, 0.7, 1.0],
     );
-
     paint.shader = gradient.createShader(Rect.fromLTWH(0, 0, width, height));
     paint.style = PaintingStyle.fill;
     canvas.drawRect(Rect.fromLTWH(0, 0, width, height), paint);
 
-    // Tambahkan elemen-elemen abstrak di atas gradient
-    final paint2 = Paint()..style = PaintingStyle.fill;
+    // Overlapping translucent colorful blobs for decoration
+    void drawBlob(double centerX, double centerY, double radius, Color color) {
+      final blobPaint = Paint()
+        ..color = color.withOpacity(0.25)
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30);
+      canvas.drawCircle(Offset(centerX, centerY), radius, blobPaint);
+    }
 
-    // Bentuk abstrak kuning di kanan bawah
-    paint2.color = Color(0xFFFFF9C4).withOpacity(0.7);
-    Path path1 = Path();
-    path1.moveTo(width * 0.6, height * 0.8);
-    path1.quadraticBezierTo(width * 0.9, height * 0.95, width, height * 0.7);
-    path1.lineTo(width, height);
-    path1.lineTo(width * 0.5, height);
-    path1.close();
-    canvas.drawPath(path1, paint2);
+    drawBlob(width * 0.2, height * 0.25, 120, Colors.pinkAccent);
+    drawBlob(width * 0.7, height * 0.3, 100, Colors.deepPurpleAccent);
+    drawBlob(width * 0.8, height * 0.7, 140, Colors.lightBlueAccent);
+    drawBlob(width * 0.3, height * 0.75, 110, Colors.tealAccent);
 
-    // Bentuk abstrak cyan di kiri atas
-    paint2.color = Color(0xFFE0F7FA).withOpacity(0.6);
-    Path path2 = Path();
-    path2.moveTo(0, height * 0.2);
-    path2.quadraticBezierTo(width * 0.1, height * 0.05, width * 0.3, 0);
-    path2.lineTo(0, 0);
-    path2.close();
-    canvas.drawPath(path2, paint2);
+    // Soft glowing circles with radial gradients
+    final glowRadius = 140.0;
+    final glowCenters = [
+      Offset(width * 0.4, height * 0.15),
+      Offset(width * 0.75, height * 0.75),
+    ];
 
-    // Lingkaran-lingkaran kecil dengan warna berbeda
-    paint2.color =  Colors.yellow;
-    canvas.drawCircle(Offset(width * 0.15, height * 0.1), 15, paint2);
-    paint2.color = Colors.cyan.shade200.withOpacity(0.5);
-    canvas.drawCircle(Offset(width * 0.85, height * 0.85), 10, paint2);
-    paint2.color = const Color.fromARGB(255, 255, 0, 0).withOpacity(0.5);
-    canvas.drawCircle(Offset(width * 0.9, height * 0.15), 20, paint2);
-    paint2.color = const Color.fromARGB(255, 0, 255, 72).withOpacity(0.5);
-    canvas.drawCircle(Offset(width * 0.05, height * 0.95), 12, paint2);
+    for (var center in glowCenters) {
+      final gradientGlow = RadialGradient(
+        colors: [
+          Colors.white.withOpacity(0.15),
+          Colors.transparent,
+        ],
+      );
+      final rect = Rect.fromCircle(center: center, radius: glowRadius);
+      paint.shader = gradientGlow.createShader(rect);
+      canvas.drawCircle(center, glowRadius, paint);
+    }
+
+    // Abstract polygon shapes with vivid colors layered with opacity
+    final polygonPaint = Paint()..style = PaintingStyle.fill;
+
+    polygonPaint.color = Colors.purpleAccent.withOpacity(0.15);
+    final polygonPath1 = Path()
+      ..moveTo(width * 0.1, height * 0.6)
+      ..lineTo(width * 0.25, height * 0.45)
+      ..lineTo(width * 0.35, height * 0.65)
+      ..close();
+    canvas.drawPath(polygonPath1, polygonPaint);
+
+    polygonPaint.color = Colors.orangeAccent.withOpacity(0.12);
+    final polygonPath2 = Path()
+      ..moveTo(width * 0.65, height * 0.85)
+      ..lineTo(width * 0.9, height * 0.85)
+      ..lineTo(width * 0.8, height * 0.95)
+      ..close();
+    canvas.drawPath(polygonPath2, polygonPaint);
+
+    // Lots of small circles scattered for sparkle effect
+    final sparklePaint = Paint()..color = Colors.white.withOpacity(0.1);
+    final sparklePositions = [
+      Offset(width * 0.15, height * 0.1),
+      Offset(width * 0.85, height * 0.2),
+      Offset(width * 0.55, height * 0.4),
+      Offset(width * 0.25, height * 0.85),
+      Offset(width * 0.75, height * 0.55),
+    ];
+    for (var pos in sparklePositions) {
+      canvas.drawCircle(pos, 6, sparklePaint);
+      canvas.drawCircle(Offset(pos.dx + 10, pos.dy + 10), 8, sparklePaint);
+    }
   }
 
   @override

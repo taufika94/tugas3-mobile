@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/material.dart'; // Mengimpor paket material design dari Flutter
+import 'package:url_launcher/url_launcher.dart'; // Mengimpor paket untuk meluncurkan URL
 
 class HelpScreen extends StatelessWidget {
+  // Kelas HelpScreen yang merupakan widget statis
+  // Daftar item bantuan yang berisi judul dan deskripsi
   final List<Map<String, String>> _helpItems = [
     {
       'title': 'Login',
@@ -9,11 +11,13 @@ class HelpScreen extends StatelessWidget {
     },
     {
       'title': 'Stopwatch',
-      'description': 'Fitur penghitung waktu dengan tombol start, pause, dan reset.',
+      'description':
+          'Fitur penghitung waktu dengan tombol start, pause, dan reset.',
     },
     {
       'title': 'Jenis Bilangan',
-      'description': 'Aplikasi untuk menentukan jenis bilangan (prima, desimal, bulat positif/negatif, cacah).',
+      'description':
+          'Aplikasi untuk menentukan jenis bilangan (prima, desimal, bulat positif/negatif, cacah).',
     },
     {
       'title': 'Tracking LBS',
@@ -25,7 +29,8 @@ class HelpScreen extends StatelessWidget {
     },
     {
       'title': 'Situs Rekomendasi',
-      'description': 'Daftar situs yang direkomendasikan dengan gambar dan link.',
+      'description':
+          'Daftar situs yang direkomendasikan dengan gambar dan link.',
     },
     {
       'title': 'Logout',
@@ -33,6 +38,7 @@ class HelpScreen extends StatelessWidget {
     },
   ];
 
+  // Daftar pertanyaan yang sering diajukan (FAQ) beserta jawabannya
   final List<Map<String, String>> _faqItems = [
     {
       'question': 'Apakah aplikasi ini gratis?',
@@ -40,42 +46,60 @@ class HelpScreen extends StatelessWidget {
     },
     {
       'question': 'Di mana saya dapat menemukan versi terbaru aplikasi?',
-      'answer': 'Anda dapat mengunduh versi terbaru aplikasi dari Google Play Store atau App Store.',
+      'answer':
+          'Anda dapat mengunduh versi terbaru aplikasi dari Google Play Store atau App Store.',
     },
     {
       'question': 'Apa saja persyaratan sistem untuk aplikasi ini?',
-      'answer': 'Aplikasi ini membutuhkan perangkat dengan sistem operasi Android versi 7.0 atau lebih tinggi, atau iOS versi 13.0 atau lebih tinggi.',
+      'answer':
+          'Aplikasi ini membutuhkan perangkat dengan sistem operasi Android versi 7.0 atau lebih tinggi, atau iOS versi 13.0 atau lebih tinggi.',
     },
   ];
 
-  final String _contactEmail = 'dukungan@aplikasimu.com';
+  // Variabel untuk menyimpan informasi kontak
+  final String _contactEmail = 'dukungan@myapp.com';
   final String _contactPhone = '+6281223222222';
-  final String _websiteUrl = 'https://www.aplikasimu.com';
+  final String _websiteUrl = 'https://www.myapp.com';
 
+  // Fungsi untuk meluncurkan URL
   Future<void> _launchURL(String url) async {
-    final Uri uri = Uri.parse(url);
+    final Uri uri = Uri.parse(url); // Mengonversi string URL menjadi Uri
     if (!await launchUrl(uri)) {
-      throw Exception('Could not launch $url');
+      // Mencoba meluncurkan URL
+      throw Exception(
+        'Could not launch $url',
+      ); // Menangani kesalahan jika gagal
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Metode untuk membangun antarmuka pengguna
     return Scaffold(
+      // Struktur dasar untuk layar
       body: Container(
+        // Kontainer untuk menampung semua konten
         decoration: BoxDecoration(
+          // Menambahkan dekorasi latar belakang
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blueAccent.withOpacity(0.1), Colors.white],
+            colors: [
+              Colors.blueAccent.withOpacity(0.1),
+              Colors.white,
+            ], // Gradien warna
           ),
         ),
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
+          // Memungkinkan konten untuk digulir
+          padding: EdgeInsets.all(16), // Padding di sekitar konten
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            // Kolom untuk menampung semua widget
+            crossAxisAlignment:
+                CrossAxisAlignment.start, // Menyusun widget di sisi kiri
             children: [
               Text(
+                // Judul utama
                 'Bantuan',
                 style: TextStyle(
                   color: Colors.blue.shade800,
@@ -83,8 +107,9 @@ class HelpScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 24),
+              SizedBox(height: 24), // Jarak vertikal
               Text(
+                // Subjudul untuk panduan penggunaan
                 'Panduan Penggunaan',
                 style: TextStyle(
                   fontSize: 20,
@@ -92,36 +117,44 @@ class HelpScreen extends StatelessWidget {
                   color: Colors.grey.shade800,
                 ),
               ),
-              SizedBox(height: 12),
+              SizedBox(height: 12), // Jarak vertikal
               ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: _helpItems.length,
+                // Membuat daftar item bantuan
+                shrinkWrap:
+                    true, // Mengatur ukuran daftar agar sesuai dengan konten
+                physics:
+                    NeverScrollableScrollPhysics(), // Menonaktifkan scroll pada ListView
+                itemCount: _helpItems.length, // Jumlah item dalam daftar
                 itemBuilder: (context, index) {
+                  // Membangun setiap item
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    elevation: 2,
+                    // Menggunakan Card untuk setiap item margin: EdgeInsets.symmetric(vertical: 8), // Margin vertikal untuk jarak antar kartu
+                    elevation: 2, // Efek bayangan pada kartu
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(
+                        12,
+                      ), // Sudut melengkung pada kartu
                     ),
                     child: Padding(
-                      padding: EdgeInsets.all(16),
+                      padding: EdgeInsets.all(16), // Padding di dalam kartu
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment:
+                            CrossAxisAlignment
+                                .start, // Menyusun konten di sisi kiri
                         children: [
                           Text(
-                            _helpItems[index]['title']!,
+                            _helpItems[index]['title']!, // Menampilkan judul item bantuan
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.blue.shade700,
+                              color: Colors.blue.shade700, // Warna judul
                             ),
                           ),
-                          SizedBox(height: 8),
+                          SizedBox(height: 8), // Jarak vertikal
                           Text(
-                            _helpItems[index]['description']!,
+                            _helpItems[index]['description']!, // Menampilkan deskripsi item bantuan
                             style: TextStyle(
-                              color: Colors.grey.shade600,
+                              color: Colors.grey.shade600, // Warna deskripsi
                             ),
                           ),
                         ],
@@ -130,8 +163,9 @@ class HelpScreen extends StatelessWidget {
                   );
                 },
               ),
-              SizedBox(height: 24),
+              SizedBox(height: 24), // Jarak vertikal
               Text(
+                // Subjudul untuk FAQ
                 'FAQ (Pertanyaan yang Sering Diajukan)',
                 style: TextStyle(
                   fontSize: 20,
@@ -139,36 +173,47 @@ class HelpScreen extends StatelessWidget {
                   color: Colors.grey.shade800,
                 ),
               ),
-              SizedBox(height: 12),
+              SizedBox(height: 12), // Jarak vertikal
               ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: _faqItems.length,
+                // Membuat daftar FAQ
+                shrinkWrap:
+                    true, // Mengatur ukuran daftar agar sesuai dengan konten
+                physics:
+                    NeverScrollableScrollPhysics(), // Menonaktifkan scroll pada ListView
+                itemCount: _faqItems.length, // Jumlah item dalam daftar FAQ
                 itemBuilder: (context, index) {
+                  // Membangun setiap item FAQ
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    elevation: 2,
+                    // Menggunakan Card untuk setiap item FAQ
+                    margin: EdgeInsets.symmetric(
+                      vertical: 8,
+                    ), // Margin vertikal untuk jarak antar kartu
+                    elevation: 2, // Efek bayangan pada kartu
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(
+                        12,
+                      ), // Sudut melengkung pada kartu
                     ),
                     child: Padding(
-                      padding: EdgeInsets.all(16),
+                      padding: EdgeInsets.all(16), // Padding di dalam kartu
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment:
+                            CrossAxisAlignment
+                                .start, // Menyusun konten di sisi kiri
                         children: [
                           Text(
-                            _faqItems[index]['question']!,
+                            _faqItems[index]['question']!, // Menampilkan pertanyaan FAQ
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.green.shade700,
+                              color: Colors.green.shade700, // Warna pertanyaan
                             ),
                           ),
-                          SizedBox(height: 8),
+                          SizedBox(height: 8), // Jarak vertikal
                           Text(
-                            _faqItems[index]['answer']!,
+                            _faqItems[index]['answer']!, // Menampilkan jawaban FAQ
                             style: TextStyle(
-                              color: Colors.grey.shade600,
+                              color: Colors.grey.shade600, // Warna jawaban
                             ),
                           ),
                         ],
@@ -177,8 +222,9 @@ class HelpScreen extends StatelessWidget {
                   );
                 },
               ),
-              SizedBox(height: 24),
+              SizedBox(height: 24), // Jarak vertikal
               Text(
+                // Subjudul untuk kontak dukungan
                 'Kontak Dukungan',
                 style: TextStyle(
                   fontSize: 20,
@@ -186,54 +232,89 @@ class HelpScreen extends StatelessWidget {
                   color: Colors.grey.shade800,
                 ),
               ),
-              SizedBox(height: 12),
+              SizedBox(height: 12), // Jarak vertikal
               Card(
-                elevation: 2,
+                // Kartu untuk menampilkan informasi kontak
+                elevation: 2, // Efek bayangan pada kartu
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(
+                    12,
+                  ), // Sudut melengkung pada kartu
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16), // Padding di dalam kartu
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment:
+                        CrossAxisAlignment
+                            .start, // Menyusun konten di sisi kiri
                     children: [
                       Row(
+                        // Baris untuk menampilkan email
                         children: [
-                          Icon(Icons.email, color: Colors.blue.shade600),
-                          SizedBox(width: 8),
+                          Icon(
+                            Icons.email,
+                            color: Colors.blue.shade600,
+                          ), // Ikon email
+                          SizedBox(width: 8), // Jarak horizontal
                           InkWell(
-                            onTap: () => _launchURL('mailto:$_contactEmail'),
+                            // Widget yang dapat diklik
+                            onTap:
+                                () => _launchURL(
+                                  'mailto:$_contactEmail',
+                                ), // Meluncurkan email
                             child: Text(
-                              _contactEmail,
-                              style: TextStyle(color: Colors.blue.shade600),
+                              _contactEmail, // Menampilkan alamat email
+                              style: TextStyle(
+                                color: Colors.blue.shade600,
+                              ), // Warna teks email
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 8), // Jarak vertikal
                       Row(
+                        // Baris untuk menampilkan nomor telepon
                         children: [
-                          Icon(Icons.phone, color: Colors.green.shade600),
-                          SizedBox(width: 8),
+                          Icon(
+                            Icons.phone,
+                            color: Colors.green.shade600,
+                          ), // Ikon telepon
+                          SizedBox(width: 8), // Jarak horizontal
                           InkWell(
-                            onTap: () => _launchURL('tel:$_contactPhone'),
+                            // Widget yang dapat diklik
+                            onTap:
+                                () => _launchURL(
+                                  'tel:$_contactPhone',
+                                ), // Meluncurkan panggilan telepon
                             child: Text(
-                              _contactPhone,
-                              style: TextStyle(color: Colors.green.shade600),
+                              _contactPhone, // Menampilkan nomor telepon
+                              style: TextStyle(
+                                color: Colors.green.shade600,
+                              ), // Warna teks nomor telepon
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 8), // Jarak vertikal
                       Row(
+                        // Baris untuk menampilkan situs web
                         children: [
-                          Icon(Icons.web, color: Colors.orange.shade600),
-                          SizedBox(width: 8),
+                          Icon(
+                            Icons.web,
+                            color: Colors.orange.shade600,
+                          ), // Ikon situs web
+                          SizedBox(width: 8), // Jarak horizontal
                           InkWell(
-                            onTap: () => _launchURL(_websiteUrl),
+                            // Widget yang dapat diklik
+                            onTap:
+                                () => _launchURL(
+                                  _websiteUrl,
+                                ), // Meluncurkan situs web
                             child: Text(
-                              _websiteUrl,
-                              style: TextStyle(color: Colors.orange.shade600),
+                              _websiteUrl, // Menampilkan URL situs web
+                              style: TextStyle(
+                                color: Colors.orange.shade600,
+                              ), // Warna teks URL
                             ),
                           ),
                         ],
@@ -242,11 +323,14 @@ class HelpScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 32),
+              SizedBox(height: 32), // Jarak vertikal
               Center(
+                // Menyusun teks versi aplikasi di tengah
                 child: Text(
-                  'Versi Aplikasi: 1.0.0', // Ganti dengan versi aplikasi Anda
-                  style: TextStyle(color: Colors.grey.shade500),
+                  'Versi Aplikasi: 1.0.0', // Menampilkan versi aplikasi
+                  style: TextStyle(
+                    color: Colors.grey.shade500,
+                  ), // Warna teks versi
                 ),
               ),
             ],
@@ -256,5 +340,5 @@ class HelpScreen extends StatelessWidget {
     );
   }
 
-  HelpScreen({super.key});
+  HelpScreen({super.key}); // Konstruktor untuk kelas HelpScreen
 }

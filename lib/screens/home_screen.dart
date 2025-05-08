@@ -9,26 +9,30 @@ import '../widgets/recommended_sites_widget.dart';
 import 'member_list_screen.dart';
 import 'help_screen.dart';
 
+// Kelas HomeScreen adalah widget stateful yang menjadi layar utama aplikasi.
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
+// State untuk HomeScreen yang mengelola logika dan tampilan.
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
-  String _username = '';
+  int _selectedIndex = 0; // Menyimpan indeks item yang dipilih di bottom navigation bar.
+  String _username = ''; // Menyimpan nama pengguna.
 
   @override
   void initState() {
     super.initState();
-    _checkLoginStatus();
-    _loadUsername();
+    _checkLoginStatus(); // Memeriksa status login saat inisialisasi.
+    _loadUsername(); // Memuat nama pengguna dari SharedPreferences.
   }
 
+  // Memeriksa apakah pengguna sudah login.
   void _checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
+    // Jika belum login, arahkan ke layar login.
     if (!isLoggedIn) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -36,10 +40,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // Memuat nama pengguna dari SharedPreferences.
   void _loadUsername() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _username = prefs.getString('username') ?? 'Pengguna';
+      _username = prefs.getString('username') ?? 'Pengguna'; // Jika tidak ada, gunakan 'Pengguna' sebagai default.
     });
   }
 
@@ -48,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Main',
+          'My APP',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -68,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: CircleAvatar(
               backgroundColor: Colors.blue.shade600,
               child: Text(
-                _username.isNotEmpty ? _username[0].toUpperCase() : 'P',
+                _username.isNotEmpty ? _username[0].toUpperCase() : 'P', // Menampilkan huruf pertama dari nama pengguna.
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -80,19 +85,20 @@ class _HomeScreenState extends State<HomeScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blueAccent.withOpacity(0.1), Colors.white], // Background dari MemberListScreen
+            colors: [Colors.blueAccent.withOpacity(0.1), Colors.white], // Latar belakang dengan gradien.
           ),
         ),
         child: _selectedIndex == 0
-            ? _buildHomeContent()
+            ? _buildHomeContent() // Konten utama jika indeks 0.
             : _selectedIndex == 1
-                ? MemberListScreen()
-                : HelpScreen(),
+                ? MemberListScreen() // Menampilkan MemberListScreen jika indeks 1.
+                : HelpScreen(), // Menampilkan HelpScreen jika indeks lainnya.
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
+      bottomNavigationBar: _buildBottomNavigationBar(), // Menampilkan bottom navigation bar.
     );
   }
 
+  // Membuat konten utama di layar beranda.
   Widget _buildHomeContent() {
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
@@ -104,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
-                'Halo, $_username',
+                'Halo, $_username', // Menyapa pengguna dengan namanya.
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -115,13 +121,14 @@ class _HomeScreenState extends State<HomeScreen> {
             Padding(
               padding: const EdgeInsets.only(bottom: 16.0),
               child: Text(
-                'Apa yang ingin Anda lakukan hari ini?',
+                'Apa yang ingin Anda lakukan hari ini?', // Pertanyaan untuk pengguna.
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey.shade600,
                 ),
               ),
             ),
+            // Membuat beberapa kartu menu untuk navigasi ke fitur lain.
             _buildMenuCard(
               'Stopwatch',
               Icons.timer,
@@ -153,10 +160,10 @@ class _HomeScreenState extends State<HomeScreen> {
               () => _navigateToScreen(RecommendedSitesWidget()),
             ),
             SizedBox(height: 24),
-            SizedBox( // Tambahkan SizedBox di sini
-              width: double.infinity, // Membuat tombol memenuhi lebar
+            SizedBox( // Menambahkan SizedBox untuk tombol logout.
+              width: double.infinity, // Membuat tombol memenuhi lebar.
               child: ElevatedButton(
-                onPressed: _logout,
+                onPressed: _logout, // Memanggil fungsi logout saat tombol ditekan.
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red.shade600,
                   foregroundColor: Colors.white,
@@ -172,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Icon(Icons.logout, size: 20, color: Colors.white),
                     SizedBox(width: 8),
                     Text(
-                      'Logout',
+                      'Logout', // Teks tombol logout.
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -188,6 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Membuat kartu menu untuk navigasi ke fitur tertentu.
   Widget _buildMenuCard(
     String title, IconData icon, Color color, VoidCallback onTap) {
     return Container(
@@ -209,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: onTap,
+          onTap: onTap, // Menangani tap pada kartu.
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -221,12 +229,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: color.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(icon, size: 28, color: color),
+                  child: Icon(icon, size: 28, color: color), // Menampilkan ikon.
                 ),
                 SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    title,
+                    title, // Menampilkan judul kartu.
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -236,7 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Icon(
                   Icons.chevron_right,
-                  color: Colors.grey.shade500,
+                  color: Colors.grey.shade500, // Menampilkan panah ke kanan.
                 ),
               ],
             ),
@@ -246,6 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Membuat bottom navigation bar.
   Widget _buildBottomNavigationBar() {
     return Container(
       decoration: BoxDecoration(
@@ -261,8 +270,8 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ClipRRect(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         child: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
+          currentIndex: _selectedIndex, // Menentukan item yang dipilih.
+          onTap: _onItemTapped, // Menangani tap pada item.
           backgroundColor: Colors.white,
           selectedItemColor: Colors.blue.shade800,
           unselectedItemColor: Colors.grey.shade600,
@@ -273,17 +282,17 @@ class _HomeScreenState extends State<HomeScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home),
-              label: 'Beranda',
+              label: 'Beranda', // Label untuk item beranda.
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.group_outlined),
               activeIcon: Icon(Icons.group),
-              label: 'Anggota',
+              label: 'Anggota', // Label untuk item anggota.
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.help_outline),
+              icon: Icon(Icons .help_outline),
               activeIcon: Icon(Icons.help),
-              label: 'Bantuan',
+              label: 'Bantuan', // Label untuk item bantuan.
             ),
           ],
         ),
@@ -291,6 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Navigasi ke layar tertentu.
   void _navigateToScreen(Widget screen) {
     Navigator.push(
       context,
@@ -298,18 +308,20 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Mengubah indeks yang dipilih saat item bottom navigation bar ditekan.
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      _selectedIndex = index; // Memperbarui indeks yang dipilih.
     });
   }
 
+  // Fungsi untuk logout pengguna.
   void _logout() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', false);
+    await prefs.setBool('isLoggedIn', false); // Mengatur status login menjadi false.
 
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => LoginScreen()),
+      MaterialPageRoute(builder: (context) => LoginScreen()), // Mengarahkan kembali ke layar login.
     );
   }
 }

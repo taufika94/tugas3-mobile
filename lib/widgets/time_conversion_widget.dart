@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import '../screens/home_screen.dart';
 
 class TimeConversionWidget extends StatefulWidget {
-  const TimeConversionWidget({super.key});
-
   @override
   _TimeConversionWidgetState createState() => _TimeConversionWidgetState();
 }
@@ -14,7 +12,7 @@ class _TimeConversionWidgetState extends State<TimeConversionWidget> {
   final TextEditingController _hourController = TextEditingController();
   final TextEditingController _minuteController = TextEditingController();
   final TextEditingController _secondController = TextEditingController();
-  
+
   // Konstanta konversi
   final double _daysInYear = 365.0; // Using 365 for simplicity (non-leap year)
   final double _hoursInDay = 24.0;
@@ -77,12 +75,18 @@ class _TimeConversionWidgetState extends State<TimeConversionWidget> {
                           children: [
                             Text(
                               'Masukkan Jumlah Tahun',
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             SizedBox(height: 8),
                             Text(
                               'Konversi akan menampilkan dalam hari, jam, menit, dan detik',
-                              style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[700],
+                              ),
                             ),
                           ],
                         ),
@@ -93,16 +97,16 @@ class _TimeConversionWidgetState extends State<TimeConversionWidget> {
                     SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: _convertYears,
+                      child: Text(
+                        'Konversi',
+                        style: TextStyle(color: Colors.white),
+                      ),
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 12),
                         backgroundColor: Colors.blue.shade800,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                      ),
-                      child: Text(
-                        'Konversi',
-                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                     SizedBox(height: 16),
@@ -154,14 +158,29 @@ class _TimeConversionWidgetState extends State<TimeConversionWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Hasil Konversi:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+              'Hasil Konversi:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             SizedBox(height: 16),
             Column(
               children: [
-                _buildResultItem('Hari', _dayController.text.isEmpty ? '-' : _dayController.text),
-                _buildResultItem('Jam', _hourController.text.isEmpty ? '-' : _hourController.text),
-                _buildResultItem('Menit', _minuteController.text.isEmpty ? '-' : _minuteController.text),
-                _buildResultItem('Detik', _secondController.text.isEmpty ? '-' : _secondController.text),
+                _buildResultItem(
+                  'Hari',
+                  _dayController.text.isEmpty ? '-' : _dayController.text,
+                ),
+                _buildResultItem(
+                  'Jam',
+                  _hourController.text.isEmpty ? '-' : _hourController.text,
+                ),
+                _buildResultItem(
+                  'Menit',
+                  _minuteController.text.isEmpty ? '-' : _minuteController.text,
+                ),
+                _buildResultItem(
+                  'Detik',
+                  _secondController.text.isEmpty ? '-' : _secondController.text,
+                ),
               ],
             ),
           ],
@@ -203,39 +222,26 @@ class _TimeConversionWidgetState extends State<TimeConversionWidget> {
         );
         return;
       }
-      
+
       double years = double.parse(_yearController.text);
-      
+
       // Calculate all values directly
       double days = years * _daysInYear;
       double hours = days * _hoursInDay;
       double minutes = hours * _minutesInHour;
       double seconds = minutes * _secondsInMinute;
-      
-      // Format the numbers
-      String formattedDays = days.toStringAsFixed(days.truncateToDouble() == days ? 0 : 2);
-      String formattedHours = hours.toStringAsFixed(hours.truncateToDouble() == hours ? 0 : 2);
-      String formattedMinutes = minutes.toStringAsFixed(minutes.truncateToDouble() == minutes ? 0 : 2);
-      String formattedSeconds;
-      
-      // Format seconds in scientific notation if too large
-      if (seconds >= 1e6) {
-        formattedSeconds = seconds.toStringAsExponential(2).replaceAll('e+', 'e+');
-      } else {
-        formattedSeconds = seconds.toStringAsFixed(seconds.truncateToDouble() == seconds ? 0 : 2);
-      }
-      
+
       // Update fields
       setState(() {
-        _dayController.text = formattedDays;
-        _hourController.text = formattedHours;
-        _minuteController.text = formattedMinutes;
-        _secondController.text = formattedSeconds;
+        _dayController.text = days.toStringAsFixed(2);
+        _hourController.text = hours.toStringAsFixed(2);
+        _minuteController.text = minutes.toStringAsFixed(2);
+        _secondController.text = seconds.toStringAsFixed(2);
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Input tidak valid: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Input tidak valid: $e')));
     }
   }
 }
